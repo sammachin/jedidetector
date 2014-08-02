@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+        <meta charset="utf-8">
+        <title>UK Jedi Detector</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/css">
+		<script>
+		function css(selector, property, value) {
+		    for (var i=0; i<document.styleSheets.length;i++) {//Loop through all styles
+		        //Try add rule
+		        try { document.styleSheets[i].insertRule(selector+ ' {'+property+':'+value+'}', document.styleSheets[i].cssRules.length);
+		        } catch(err) {try { document.styleSheets[i].addRule(selector, property+':'+value);} catch(err) {}}//IE
+		    }
+		}
+
+		function sabre(value){
+			css('.lightsaber input[type=checkbox]:checked ~ div.plasma', 'height', value+'px');
+		}
+		
+		function success(position) {
+		  var s = document.getElementById('status');
+		  console.log(position.coords.latitude);
+		  console.log(position.coords.longitude);
+		  var url = "/lookup?lat="+ position.coords.latitude + "&lng=" + position.coords.longitude;
+		  $.getJSON(url, function(data){
+		      console.log(data);
+			  sabre(data.pixels)
+		    });
+		}
+
+		function error(msg) {
+			alert(msg)
+		}
+		
+		//Main Section
+		$('document').ready(function(){
+			
+			if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(success, error);
+			} 
+			else {
+					alert('not supported');
+			}
+			
+		});
+		
+		</script>
+		
+  </head>
+  <body>
+	<section class="the-demo">
+		<div class="example-item">
+			<div class="lightsaber">
+				<label for="yoda-example"></label>
+				<input type="checkbox" id="yoda-example" checked="checked" onClick="click()">
+				<div class="switch"></div>
+				<div class="plasma yoda"></div>
+			</div>
+			<h3>Jedi</h3>
+		</div>	
+	</section>
+	
+  </body>
+  </html>
